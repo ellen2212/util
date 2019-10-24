@@ -145,7 +145,61 @@ function extend2() {
   return target;
 }
 
+//数组扁平化处理，一层扁平化（更实用，多个数组的并集，交集，过滤等），深度扁平化
+
+function flatten(input,shallow,filter,output) {
+
+  output = output || [];
+  let idx = output.length;
+
+  //是否数组
+  for(let i = 0 ; i <input.length ; i++) {
+    let value = input[i];
+    if(Array.isArray(value)){
+      if(shallow) {
+        let j = 0;
+        let len = value.length;
+        while(j < len) {
+          output[idx++] = value[j++];
+        }
+      }else {
+        flatten(value,shallow,filter,output);
+        idx = output.length;
+
+      }
+    }else if(!filter) {
+      output[idx++] = input[i];
+    }
+  }
+
+  return output;
+}
 
 
+//数组扁平化，一层扁平化，并去重，求并集
+function union(arr) {
+  let output = flatten(arr,true,true);
+  return Array.from(new Set(output));
+}
 
+//数组扁平化，一层扁平化，并去重，求交集
+function difference(target,arr) {
+  let output = flatten(arr,true,true);
+  return target.filter((a)=>output.indexOf(a) > -1);
+}
 
+function sortedIndex(arr,obj) {
+  let left = 0;
+  let right = arr.length;
+  while(left < right) {
+    let mid = Math.floor((right + left) / 2);
+    if(arr[mid] < obj ) {
+      //right
+      left = mid+1;
+    }else{
+      //left
+      right = mid;
+    }
+  }
+  return right;
+}
